@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2A Multi-Agent Communication - Technical Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        
+        .architecture-section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .component-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .component-card h4 {
+            margin-top: 0;
+            color: #e74c3c;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .tech-badge {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .mermaid {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .workflow-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .port-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>A2A Multi-Agent Communication System</h1>
+        <h2>Technical Architecture & Workflow Documentation</h2>
+        
+        <div class="architecture-section">
+            <h3>Project Overview</h3>
+            <p>This project implements a simplified version of the Agent-to-Agent (A2A) protocol for inter-agent communication. The system features two specialized agents that can communicate to solve complex problems collaboratively using JSON-RPC 2.0 over HTTP.</p>
+            
+            <div class="tech-stack">
+                <span class="tech-badge">Python 3.9+</span>
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">JSON-RPC 2.0</span>
+                <span class="tech-badge">NumPy</span>
+                <span class="tech-badge">Pandas</span>
+                <span class="tech-badge">Matplotlib</span>
+                <span class="tech-badge">A2A Protocol</span>
+            </div>
+        </div>
+
+        <h2>System Architecture Overview</h2>
+        <div class="mermaid">
+            graph TB
+                subgraph "A2A Multi-Agent System"
+                    subgraph "Core Components"
+                        A2A[A2A Protocol<br/>common/a2a_protocol.py]
+                        BASE[Base Agent<br/>common/base_agent.py]
+                    end
+                    
+                    subgraph "Specialized Agents"
+                        MATH[Math Agent<br/>Port 8001<br/>Mathematical Computations]
+                        DATA[Data Analyst Agent<br/>Port 8002<br/>Data Analysis & Visualization]
+                    end
+                    
+                    subgraph "Orchestration Layer"
+                        ORCH[Multi-Agent Orchestrator<br/>examples/orchestrator.py]
+                    end
+                    
+                    subgraph "Management Scripts"
+                        START1[start_math_agent.py]
+                        START2[start_data_agent.py]
+                        DEMO[run_demo.py]
+                        LAUNCH[launch_system.py]
+                        TEST[test_system.py]
+                    end
+                end
+                
+                A2A --> BASE
+                BASE --> MATH
+                BASE --> DATA
+                ORCH --> MATH
+                ORCH --> DATA
+                START1 --> MATH
+                START2 --> DATA
+                DEMO --> ORCH
+                LAUNCH --> MATH
+                LAUNCH --> DATA
+                LAUNCH --> ORCH
+                TEST --> MATH
+                TEST --> DATA
+                
+                style A2A fill:#e1f5fe
+                style BASE fill:#e8f5e8
+                style MATH fill:#fff3e0
+                style DATA fill:#fce4ec
+                style ORCH fill:#f3e5f5
+        </div>
+
+        <h2>Component Architecture</h2>
+        <div class="component-grid">
+            <div class="component-card">
+                <h4>A2A Protocol Core</h4>
+                <p><strong>File:</strong> common/a2a_protocol.py</p>
+                <p><strong>Purpose:</strong> Implements core A2A protocol classes and message handling</p>
+                <ul>
+                    <li>Message, Task, AgentCard dataclasses</li>
+                    <li>TaskState and TaskStatus enums</li>
+                    <li>JSON-RPC 2.0 protocol constants</li>
+                    <li>MessageSendParams for communication</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>Base Agent Framework</h4>
+                <p><strong>File:</strong> common/base_agent.py</p>
+                <p><strong>Purpose:</strong> Abstract base class for all A2A-compatible agents</p>
+                <ul>
+                    <li>FastAPI server integration</li>
+                    <li>Async message processing</li>
+                    <li>Agent discovery and health checks</li>
+                    <li>Task management and storage</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>Math Agent</h4>
+                <p><strong>File:</strong> agents/math_agent.py</p>
+                <p><strong>Port:</strong> 8001</p>
+                <ul>
+                    <li>Arithmetic operations</li>
+                    <li>Statistical analysis</li>
+                    <li>Linear algebra</li>
+                    <li>Probability distributions</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>Data Analyst Agent</h4>
+                <p><strong>File:</strong> agents/data_analyst_agent.py</p>
+                <p><strong>Port:</strong> 8002</p>
+                <ul>
+                    <li>Data visualization</li>
+                    <li>Correlation analysis</li>
+                    <li>Trend analysis</li>
+                    <li>Statistical reporting</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Communication Protocol Flow</h2>
+        <div class="mermaid">
+            sequenceDiagram
+                participant O as Orchestrator
+                participant M as Math Agent<br/>(Port 8001)
+                participant D as Data Analyst<br/>(Port 8002)
+                
+                Note over O,D: System Initialization
+                O->>M: GET /health (Health Check)
+                M-->>O: 200 OK
+                O->>D: GET /health (Health Check)
+                D-->>O: 200 OK
+                
+                Note over O,D: Agent Discovery
+                O->>M: GET /agent-card (Capability Discovery)
+                M-->>O: AgentCard with capabilities
+                O->>D: GET /agent-card (Capability Discovery)
+                D-->>O: AgentCard with capabilities
+                
+                Note over O,D: Task Processing Example
+                O->>O: Analyze user request<br/>"Calculate statistics and create visualization"
+                O->>M: POST /send-message<br/>Statistical calculation request
+                M->>M: Process mathematical computation
+                M-->>O: Task result with statistics
+                
+                O->>D: POST /send-message<br/>Visualization request with stats
+                D->>D: Create charts and analysis
+                D-->>O: Task result with visualization
+                
+                O->>O: Combine results from both agents
+                Note over O,D: Final response to user
+        </div>
+
+        <h2>Message Structure & Protocol</h2>
+        <div class="architecture-section">
+            <h3>A2A Message Format</h3>
+            <div class="code-block">
+{
+  "jsonrpc": "2.0",
+  "method": "send-message",
+  "params": {
+    "message": {
+      "role": "user",
+      "parts": [
+        {
+          "kind": "text",
+          "text": "Calculate the mean of [1,2,3,4,5]"
+        }
+      ],
+      "contextId": "ctx-123",
+      "taskId": "task-456"
+    },
+    "contextId": "ctx-123",
+    "sessionId": "session-789"
+  },
+  "id": "msg-001"
+}
+            </div>
+            
+            <h3>Task Response Format</h3>
+            <div class="code-block">
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "id": "task-456",
+    "messages": [...],
+    "status": {
+      "state": "completed",
+      "message": {
+        "role": "agent",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "The mean of [1,2,3,4,5] is 3.0"
+          }
+        ]
+      }
+    },
+    "contextId": "ctx-123",
+    "sessionId": "session-789"
+  },
+  "id": "msg-001"
+}
+            </div>
+        </div>
+
+        <h2>Agent Capabilities Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Port</th>
+                    <th>Primary Capabilities</th>
+                    <th>Input Types</th>
+                    <th>Output Types</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Math Agent</td>
+                    <td>8001</td>
+                    <td>
+                        • Arithmetic operations<br/>
+                        • Statistical analysis<br/>
+                        • Linear algebra<br/>
+                        • Probability distributions
+                    </td>
+                    <td>
+                        • Mathematical expressions<br/>
+                        • Numeric arrays<br/>
+                        • Statistical queries
+                    </td>
+                    <td>
+                        • Numerical results<br/>
+                        • Statistical summaries<br/>
+                        • Mathematical proofs
+                    </td>
+                </tr>
+                <tr>
+                    <td>Data Analyst Agent</td>
+                    <td>8002</td>
+                    <td>
+                        • Data visualization<br/>
+                        • Correlation analysis<br/>
+                        • Trend analysis<br/>
+                        • Report generation
+                    </td>
+                    <td>
+                        • CSV data<br/>
+                        • JSON datasets<br/>
+                        • Statistical results
+                    </td>
+                    <td>
+                        • Charts and plots<br/>
+                        • Analysis reports<br/>
+                        • Data insights
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>System Workflow</h2>
+        <div class="mermaid">
+            flowchart TD
+                START([User Request]) --> PARSE{Orchestrator<br/>Analyzes Request}
+                
+                PARSE -->|Math Required| MATH_FLOW[Send to Math Agent<br/>Port 8001]
+                PARSE -->|Data Analysis Required| DATA_FLOW[Send to Data Analyst<br/>Port 8002]
+                PARSE -->|Both Required| BOTH_FLOW[Multi-Agent Workflow]
+                
+                MATH_FLOW --> MATH_PROCESS[Math Agent Processing<br/>• Arithmetic<br/>• Statistics<br/>• Linear Algebra]
+                DATA_FLOW --> DATA_PROCESS[Data Analyst Processing<br/>• Visualization<br/>• Analysis<br/>• Reporting]
+                
+                BOTH_FLOW --> STEP1[Step 1: Math Agent<br/>Calculate Statistics]
+                STEP1 --> STEP2[Step 2: Data Analyst<br/>Create Visualization]
+                STEP2 --> COMBINE[Combine Results]
+                
+                MATH_PROCESS --> RESPONSE[Return Response]
+                DATA_PROCESS --> RESPONSE
+                COMBINE --> RESPONSE
+                
+                RESPONSE --> END([Final Result to User])
+                
+                style START fill:#e8f5e8
+                style PARSE fill:#fff3e0
+                style MATH_FLOW fill:#e1f5fe
+                style DATA_FLOW fill:#fce4ec
+                style BOTH_FLOW fill:#f3e5f5
+                style END fill:#e8f5e8
+        </div>
+
+        <h2>Deployment Architecture</h2>
+        <div class="mermaid">
+            graph LR
+                subgraph "Local Development Environment"
+                    subgraph "Agent Services"
+                        M[Math Agent<br/>localhost:8001<br/>FastAPI Server]
+                        D[Data Analyst Agent<br/>localhost:8002<br/>FastAPI Server]
+                    end
+                    
+                    subgraph "Client Applications"
+                        O[Orchestrator<br/>HTTP Client]
+                        T[Test Suite<br/>System Validation]
+                    end
+                    
+                    subgraph "Management Layer"
+                        L[Launch Scripts<br/>Process Management]
+                        VS[VS Code Tasks<br/>Development Tools]
+                    end
+                end
+                
+                O -.->|HTTP/JSON-RPC| M
+                O -.->|HTTP/JSON-RPC| D
+                T -.->|Health Checks| M
+                T -.->|Health Checks| D
+                L --> M
+                L --> D
+                L --> O
+                VS --> L
+                
+                style M fill:#e1f5fe
+                style D fill:#fce4ec
+                style O fill:#f3e5f5
+                style T fill:#e8f5e8
+                style L fill:#fff3e0
+                style VS fill:#f0f0f0
+        </div>
+
+        <h2>Startup and Launch Options</h2>
+        <div class="component-grid">
+            <div class="component-card">
+                <h4>Individual Agent Launch</h4>
+                <div class="code-block">
+# Math Agent only
+python start_math_agent.py
+
+# Data Analyst Agent only  
+python start_data_agent.py
+                </div>
+                <div class="port-info">
+                    <strong>Ports:</strong> Math Agent (8001), Data Analyst (8002)
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <h4>Complete System Launch</h4>
+                <div class="code-block">
+# Launch all agents and orchestrator
+python launch_system.py
+
+# Run demonstration
+python run_demo.py
+                </div>
+                <div class="port-info">
+                    <strong>Services:</strong> Both agents + orchestrator demo
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <h4>VS Code Integration</h4>
+                <div class="code-block">
+# Available VS Code tasks:
+- Launch Math Agent
+- Launch Data Analyst Agent  
+- Launch Complete System
+- Run Demo
+- Run Tests
+                </div>
+                <div class="port-info">
+                    <strong>Access:</strong> Ctrl/Cmd + Shift + P → "Tasks: Run Task"
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <h4>System Validation</h4>
+                <div class="code-block">
+# Test system health and communication
+python test_system.py
+                </div>
+                <div class="port-info">
+                    <strong>Validates:</strong> Agent health, communication, capabilities
+                </div>
+            </div>
+        </div>
+
+        <h2>Error Handling & Resilience</h2>
+        <div class="mermaid">
+            flowchart TD
+                REQ[Incoming Request] --> VALIDATE{Validate Request}
+                VALIDATE -->|Valid| PROCESS[Process Request]
+                VALIDATE -->|Invalid| ERROR1[Return Validation Error]
+                
+                PROCESS --> AGENT{Agent Available?}
+                AGENT -->|Yes| EXECUTE[Execute Task]
+                AGENT -->|No| ERROR2[Agent Unavailable Error]
+                
+                EXECUTE --> SUCCESS{Task Successful?}
+                SUCCESS -->|Yes| RESULT[Return Result]
+                SUCCESS -->|No| ERROR3[Task Execution Error]
+                
+                ERROR1 --> LOG[Log Error]
+                ERROR2 --> LOG
+                ERROR3 --> LOG
+                LOG --> RETRY{Retry Logic}
+                RETRY -->|Yes| PROCESS
+                RETRY -->|No| FINAL_ERROR[Return Error Response]
+                
+                RESULT --> END[Response Sent]
+                FINAL_ERROR --> END
+                
+                style REQ fill:#e8f5e8
+                style RESULT fill:#e8f5e8
+                style ERROR1 fill:#ffebee
+                style ERROR2 fill:#ffebee
+                style ERROR3 fill:#ffebee
+                style FINAL_ERROR fill:#ffebee
+        </div>
+
+        <h2>Performance Considerations</h2>
+        <div class="architecture-section">
+            <div class="warning">
+                <h4>⚠️ Current Limitations</h4>
+                <ul>
+                    <li>Single-threaded agent processing</li>
+                    <li>In-memory task storage (not persistent)</li>
+                    <li>No load balancing for multiple requests</li>
+                    <li>Basic error recovery mechanisms</li>
+                </ul>
+            </div>
+            
+            <div class="success">
+                <h4>✅ Optimization Opportunities</h4>
+                <ul>
+                    <li>Implement async task queues</li>
+                    <li>Add persistent storage for tasks</li>
+                    <li>Implement agent clustering</li>
+                    <li>Add comprehensive monitoring</li>
+                    <li>Cache frequently used calculations</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Development Workflow</h2>
+        <div class="workflow-step">
+            <h4>Step 1: Environment Setup</h4>
+            <p>Create Python virtual environment and install dependencies from requirements.txt</p>
+        </div>
+        
+        <div class="workflow-step">
+            <h4>Step 2: Agent Development</h4>
+            <p>Extend BaseAgent class, implement process_message method, define capabilities</p>
+        </div>
+        
+        <div class="workflow-step">
+            <h4>Step 3: Testing</h4>
+            <p>Run test_system.py to validate agent communication and functionality</p>
+        </div>
+        
+        <div class="workflow-step">
+            <h4>Step 4: Integration</h4>
+            <p>Use orchestrator to coordinate multiple agents for complex problem solving</p>
+        </div>
+        
+        <div class="workflow-step">
+            <h4>Step 5: Deployment</h4>
+            <p>Launch system using provided scripts or VS Code tasks</p>
+        </div>
+
+        <h2>Future Enhancements</h2>
+        <div class="component-grid">
+            <div class="component-card">
+                <h4>Protocol Extensions</h4>
+                <ul>
+                    <li>WebSocket support for real-time communication</li>
+                    <li>Message encryption and authentication</li>
+                    <li>Agent capability negotiation</li>
+                    <li>Distributed agent discovery</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>Additional Agents</h4>
+                <ul>
+                    <li>Natural Language Processing Agent</li>
+                    <li>Image Processing Agent</li>
+                    <li>Database Query Agent</li>
+                    <li>File Management Agent</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>Infrastructure</h4>
+                <ul>
+                    <li>Docker containerization</li>
+                    <li>Kubernetes orchestration</li>
+                    <li>Service mesh integration</li>
+                    <li>Monitoring and observability</li>
+                </ul>
+            </div>
+            
+            <div class="component-card">
+                <h4>User Interface</h4>
+                <ul>
+                    <li>Web-based agent dashboard</li>
+                    <li>Real-time task monitoring</li>
+                    <li>Interactive agent testing</li>
+                    <li>Performance analytics</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="architecture-section">
+            <h3>📄 Documentation Generated</h3>
+            <p><strong>Date:</strong> July 24, 2025</p>
+            <p><strong>Project:</strong> A2A Multi-Agent Communication System</p>
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Author:</strong> AI Development Team</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#3498db',
+                primaryTextColor: '#2c3e50',
+                primaryBorderColor: '#2980b9',
+                lineColor: '#34495e',
+                secondaryColor: '#ecf0f1',
+                tertiaryColor: '#f8f9fa'
+            }
+        });
+    </script>
+</body>
+</html>
