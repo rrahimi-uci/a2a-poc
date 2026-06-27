@@ -354,7 +354,7 @@ What would you like me to analyze?"""
     def _extract_data(self, text: str) -> List[Any]:
         """Extract data from text."""
         # Look for JSON-like data structures
-        json_pattern = r'\\{[^}]+\\}'
+        json_pattern = r'\{[^}]+\}'
         json_matches = re.findall(json_pattern, text)
         
         for match in json_matches:
@@ -369,7 +369,7 @@ What would you like me to analyze?"""
                 pass
         
         # Look for array/list patterns
-        array_pattern = r'\\[([\\d.,\\s()]+)\\]'
+        array_pattern = r'\[([\d.,\s()]+)\]'
         array_matches = re.findall(array_pattern, text)
         
         for match in array_matches:
@@ -377,7 +377,7 @@ What would you like me to analyze?"""
                 # Check for tuples (paired data)
                 if '(' in match:
                     # Extract tuples like (1,2), (3,4)
-                    tuple_pattern = r'\\(([\\d.,\\s]+)\\)'
+                    tuple_pattern = r'\(([\d.,\s]+)\)'
                     tuple_matches = re.findall(tuple_pattern, match)
                     
                     pairs = []
@@ -398,7 +398,7 @@ What would you like me to analyze?"""
                 continue
         
         # Look for individual numbers as fallback
-        number_pattern = r'-?\\d+\\.?\\d*'
+        number_pattern = r'-?\d+\.?\d*'
         matches = re.findall(number_pattern, text)
         
         if len(matches) >= 3:  # Need at least 3 points for meaningful analysis
@@ -577,7 +577,7 @@ Note: In a full implementation, the actual chart image would be generated and sa
         if df[y_col].mean() > df[x_col].mean():
             insights.append(f"- {y_col} values are generally higher than {x_col} values")
         
-        return "\\n".join(insights) if insights else "- Data shows standard statistical distribution"
+        return "\n".join(insights) if insights else "- Data shows standard statistical distribution"
     
     def _generate_single_var_insights(self, series: pd.Series) -> str:
         """Generate insights for single variable data."""
@@ -615,7 +615,7 @@ Note: In a full implementation, the actual chart image would be generated and sa
         except:
             pass
         
-        return "\\n".join(insights) if insights else "- Data follows a normal distribution pattern"
+        return "\n".join(insights) if insights else "- Data follows a normal distribution pattern"
 
 
 if __name__ == "__main__":

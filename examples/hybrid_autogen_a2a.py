@@ -317,7 +317,7 @@ async def demo_hybrid_system():
     ]
     
     for i, problem in enumerate(hybrid_problems, 1):
-        print(f"\\n{i}. HYBRID PROBLEM:")
+        print(f"\n{i}. HYBRID PROBLEM:")
         print(f"   {problem}")
         print("-" * 60)
         
@@ -330,7 +330,7 @@ async def demo_hybrid_system():
             for step in result['steps']:
                 print(f"   • {step['step']} via {step['framework']}")
             
-            print("\\n🎯 FINAL HYBRID SOLUTION:")
+            print("\n🎯 FINAL HYBRID SOLUTION:")
             print(result['final_result'])
             
         except Exception as e:
@@ -359,8 +359,8 @@ async def main():
     
     await demo_hybrid_system()
     
-    print("\\n✨ Hybrid agent system demonstration complete!")
-    print("\\n🔧 To enable full functionality:")
+    print("\n✨ Hybrid agent system demonstration complete!")
+    print("\n🔧 To enable full functionality:")
     print("1. Install AutoGen: pip install pyautogen")
     print("2. Set OpenAI API key: export OPENAI_API_KEY='your-key'")
     print("3. Start A2A Math Agent: python scripts/start_math_agent.py")

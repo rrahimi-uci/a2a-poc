@@ -306,7 +306,7 @@ def generic_data_analysis(data):
     print(f"Sample data: {data[:5] if len(data) > 5 else data}")
     
     # Basic statistics
-    print("\\n=== Basic Statistics ===")
+    print("\n=== Basic Statistics ===")
     print(f"Mean: {np.mean(data):.4f}")
     print(f"Median: {np.median(data):.4f}")
     print(f"Standard Deviation: {np.std(data):.4f}")
@@ -387,7 +387,7 @@ class SimpleHybridOrchestrator:
             
             # Step 2: Code generation via Mock AutoGen
             print("💻 Step 2: Code Generation (Mock AutoGen)")
-            code_request = f"Generate Python code for: {problem}\\n\\nMath results: {math_result}"
+            code_request = f"Generate Python code for: {problem}\n\nMath results: {math_result}"
             code_result = await self.mock_autogen.generate_code(code_request)
             result["generated_code"] = code_result
             result["agents"].append("Mock AutoGen Agent")
@@ -466,7 +466,7 @@ async def demo_simple_hybrid():
     ]
     
     for i, problem in enumerate(problems, 1):
-        print(f"\\n🔬 EXAMPLE {i}:")
+        print(f"\n🔬 EXAMPLE {i}:")
         print("-" * 30)
         
         try:
@@ -478,7 +478,7 @@ async def demo_simple_hybrid():
             for step in result['steps']:
                 print(f"   • {step['agent']} ({step['framework']}): {step['task']}")
             
-            print("\\n🎯 Final Solution:")
+            print("\n🎯 Final Solution:")
             print(result['final_solution'])
             
         except Exception as e:
@@ -508,8 +508,8 @@ async def main():
     
     await demo_simple_hybrid()
     
-    print("\\n✨ Simple hybrid demo complete!")
-    print("\\n🔧 To try with real AutoGen:")
+    print("\n✨ Simple hybrid demo complete!")
+    print("\n🔧 To try with real AutoGen:")
     print("1. Run: python examples/setup_autogen.py")
     print("2. Set OpenAI API key")
     print("3. Run: python examples/hybrid_autogen_a2a.py")

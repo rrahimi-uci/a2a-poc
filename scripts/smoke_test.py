@@ -31,7 +31,7 @@ async def test_agent_communication():
     print("=" * 40)
     
     # Test Math Agent
-    print("\\n1. Testing Math Agent...")
+    print("\n1. Testing Math Agent...")
     try:
         # Test agent card
         response = requests.get("http://localhost:8001", timeout=5)
@@ -69,7 +69,7 @@ async def test_agent_communication():
         return False
     
     # Test Data Analyst Agent  
-    print("\\n2. Testing Data Analyst Agent...")
+    print("\n2. Testing Data Analyst Agent...")
     try:
         # Test agent card
         response = requests.get("http://localhost:8002", timeout=5)
@@ -106,7 +106,7 @@ async def test_agent_communication():
         print(f"❌ Data Analyst Agent test failed: {e}")
         return False
     
-    print("\\n🎉 All tests passed! A2A system is working correctly.")
+    print("\n🎉 All tests passed! A2A system is working correctly.")
     return True
 
 
@@ -114,7 +114,7 @@ def main():
     """Main test function"""
     print("🚀 A2A Multi-Agent System Test")
     print("This test will start both agents and verify communication")
-    print("Press Ctrl+C to stop at any time\\n")
+    print("Press Ctrl+C to stop at any time\n")
     
     # Start agents in background threads
     print("Starting agents...")
@@ -133,19 +133,19 @@ def main():
     try:
         success = asyncio.run(test_agent_communication())
         if success:
-            print("\\n✨ Test completed successfully!")
-            print("\\n📝 Next steps:")
+            print("\n✨ Test completed successfully!")
+            print("\n📝 Next steps:")
             print("1. Run 'python scripts/start_math_agent.py' in one terminal")
             print("2. Run 'python scripts/start_data_agent.py' in another terminal") 
             print("3. Run 'python scripts/run_demo.py' to see the full orchestrator demo")
             print("   OR run 'python scripts/launch_system.py' to start everything at once")
         else:
-            print("\\n❌ Tests failed. Check the error messages above.")
+            print("\n❌ Tests failed. Check the error messages above.")
             
     except KeyboardInterrupt:
-        print("\\n🛑 Test interrupted by user")
+        print("\n🛑 Test interrupted by user")
     except Exception as e:
-        print(f"\\n💥 Test failed with error: {e}")
+        print(f"\n💥 Test failed with error: {e}")
 
 
 if __name__ == "__main__":

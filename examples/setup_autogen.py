@@ -29,7 +29,7 @@ def install_autogen():
 
 def setup_openai_key():
     """Guide user through OpenAI API key setup."""
-    print("\\n🔑 OpenAI API Key Setup")
+    print("\n🔑 OpenAI API Key Setup")
     print("-" * 30)
     
     current_key = os.getenv("OPENAI_API_KEY")
@@ -38,18 +38,18 @@ def setup_openai_key():
         return True
     
     print("To use AutoGen with LLM capabilities, you need an OpenAI API key.")
-    print("\\nOptions:")
+    print("\nOptions:")
     print("1. Get a free API key from: https://platform.openai.com/api-keys")
     print("2. Set environment variable: export OPENAI_API_KEY='your-key'")
     print("3. Or create a .env file in the project root")
     
-    key = input("\\nEnter your OpenAI API key (or press Enter to skip): ").strip()
+    key = input("\nEnter your OpenAI API key (or press Enter to skip): ").strip()
     
     if key:
         # Create .env file
         env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
         with open(env_path, "w") as f:
-            f.write(f"OPENAI_API_KEY={key}\\n")
+            f.write(f"OPENAI_API_KEY={key}\n")
         print(f"✅ API key saved to .env file")
         return True
     else:
@@ -80,22 +80,22 @@ def main():
     print("=" * 40)
     
     print("This script will set up the hybrid AutoGen-A2A agent system.")
-    print("\\n1. Installing AutoGen...")
+    print("\n1. Installing AutoGen...")
     
     if install_autogen():
-        print("\\n2. Setting up OpenAI API key...")
+        print("\n2. Setting up OpenAI API key...")
         setup_openai_key()
         
-        print("\\n3. Creating demo configuration...")
+        print("\n3. Creating demo configuration...")
         create_demo_config()
         
-        print("\\n✅ Setup complete!")
-        print("\\n🎯 Next steps:")
+        print("\n✅ Setup complete!")
+        print("\n🎯 Next steps:")
         print("1. Start A2A Math Agent: python scripts/start_math_agent.py")
         print("2. Run hybrid demo: python examples/hybrid_autogen_a2a.py")
         
     else:
-        print("\\n❌ Setup failed. Please install dependencies manually:")
+        print("\n❌ Setup failed. Please install dependencies manually:")
         print("pip install pyautogen openai")
 
 

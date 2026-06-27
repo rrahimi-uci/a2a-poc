@@ -1,272 +1,284 @@
-# A2A Multi-Agent Communication System
+<div align="center">
 
-A Python implementation demonstrating agent-to-agent (A2A) communication where two specialized agents collaborate to solve complex problems. This project showcases how AI agents can work together using a standardized communication protocol.
+# 🤖 A2A Protocol — Multi-Agent Communication
 
-## 🤖 Agents
+### Specialized AI agents that collaborate to solve problems, over a clean JSON-RPC 2.0 **Agent-to-Agent (A2A)** protocol.
 
-### Math Agent
-**Port:** 8001  
-**Capabilities:**
-- Mathematical computations (arithmetic, algebra)
-- Statistical analysis (mean, std dev, correlation)
-- Probability distributions
-- Linear algebra operations
+[![CI](https://github.com/rrahimi-uci/a2a-poc/actions/workflows/ci.yml/badge.svg)](https://github.com/rrahimi-uci/a2a-poc/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://rrahimi-uci.github.io/a2a-poc/)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-31%20passing-brightgreen.svg)](tests/)
+[![Code style](https://img.shields.io/badge/protocol-JSON--RPC%202.0-orange.svg)](https://www.jsonrpc.org/specification)
 
-### Data Analyst Agent  
-**Port:** 8002  
-**Capabilities:**
-- Data visualization (plots, charts, histograms)
-- Statistical reporting and insights
-- Correlation analysis
-- Trend identification
+**[📖 Documentation & Live Site](https://rrahimi-uci.github.io/a2a-poc/)** ·
+**[🏗️ Architecture](ARCHITECTURE.md)** ·
+**[🚀 Quick Start](#-quick-start)** ·
+**[🧪 Tests](#-testing)**
 
-## 🚀 Quick Start
+</div>
 
-### Prerequisites
-- Python 3.9+
-- Virtual environment (recommended)
+---
 
-### Installation
+## ✨ What is this?
 
-1. **Clone and set up the environment:**
-```bash
-cd A2Acommunication
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\\Scripts\\activate
-pip install -r requirements.txt
-```
+This project is a small, **readable reference implementation** of the
+**Agent-to-Agent (A2A) protocol** — a pattern where independent, specialized
+AI agents expose their capabilities and **talk to each other over HTTP using
+JSON-RPC 2.0**. Instead of one monolithic model doing everything, work is
+split across focused agents that a coordinator stitches together.
 
-2. **Start the agents (in separate terminals):**
+Two agents ship out of the box:
 
-**Terminal 1 - Math Agent:**
-```bash
-source venv/bin/activate
-python scripts/start_math_agent.py
-```
+| Agent | Port | Specializes in |
+|-------|:----:|----------------|
+| 🧮 **Math Agent** | `8001` | Arithmetic, statistics, linear algebra, probability distributions |
+| 📊 **Data Analyst Agent** | `8002` | Correlation analysis, distributions, visualizations, reports |
 
-**Terminal 2 - Data Analyst Agent:**
-```bash
-source venv/bin/activate  
-python scripts/start_data_agent.py
-```
+A **Multi-Agent Orchestrator** analyzes an incoming problem, decides which
+agent(s) it needs, routes the work, and combines the results into a single
+answer.
 
-3. **Run the demo (in a third terminal):**
-```bash
-source venv/bin/activate
-python scripts/run_demo.py
-```
+> 💡 **Why it matters:** the same discovery + messaging pattern lets agents
+> built on *different frameworks* interoperate. The included
+> [hybrid demo](examples/) shows an A2A agent collaborating with a
+> Microsoft **AutoGen**-style agent.
 
-**Alternative - Launch Complete System:**
-```bash
-source venv/bin/activate
-python scripts/launch_system.py
-```
-
-## 📋 Example Problems
-
-The system can solve problems like:
-
-1. **Statistical Analysis + Visualization:**
-   ```
-   "Calculate the mean and standard deviation of [12, 15, 18, 20, 22, 25, 28, 30] and create a histogram"
-   ```
-
-2. **Correlation Analysis:**
-   ```
-   "Find the correlation between [(1,5), (2,7), (3,6), (4,8), (5,10)] and visualize the relationship"
-   ```
-
-3. **Distribution Analysis:**
-   ```
-   "Analyze the statistical properties of normal distribution with mean 100 and std dev 15"
-   ```
+---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐    A2A Protocol    ┌──────────────────┐
-│   Math Agent    │◄─────────────────►│ Data Analyst     │
-│   (Port 8001)   │   JSON-RPC 2.0    │   Agent          │
-│                 │                    │ (Port 8002)      │
-└─────────────────┘                    └──────────────────┘
-         ▲                                        ▲
-         │                                        │
-         │            ┌─────────────────┐        │
-         └────────────│  Orchestrator   │────────┘
-                      │  (Coordinator)  │
-                      └─────────────────┘
+                         ┌──────────────────────────┐
+                         │   Multi-Agent             │
+            ┌───────────►│   Orchestrator            │◄───────────┐
+            │            │   (analyze · route ·      │            │
+            │            │    combine)               │            │
+            │            └──────────────────────────┘            │
+            │ JSON-RPC 2.0                          JSON-RPC 2.0  │
+            ▼                                                     ▼
+  ┌────────────────────┐                          ┌────────────────────┐
+  │   🧮 Math Agent     │   A2A Protocol (HTTP)    │ 📊 Data Analyst     │
+  │   :8001             │◄────────────────────────►│   Agent  :8002      │
+  │   FastAPI service   │                          │   FastAPI service   │
+  └────────────────────┘                          └────────────────────┘
 ```
 
-### Communication Flow
+Every agent publishes an **Agent Card** at `GET /` (and the conventional
+`GET /.well-known/agent.json`) describing its identity, capabilities and
+connection info — so agents can discover one another at runtime.
 
-1. **Problem Analysis:** Orchestrator analyzes the problem to determine which agents are needed
-2. **Agent Selection:** Routes requests to Math Agent, Data Analyst Agent, or both
-3. **Collaborative Processing:** Agents communicate via A2A protocol to share results
-4. **Result Integration:** Orchestrator combines outputs into comprehensive solutions
+➡️ **Full design, sequence diagrams, and extension guide:
+[ARCHITECTURE.md](ARCHITECTURE.md)**
 
-## 🔧 A2A Protocol Features
+---
 
-- **JSON-RPC 2.0** based communication
-- **Agent Cards** for capability discovery
-- **Task-based** interaction model  
-- **Async messaging** support
-- **Error handling** and status reporting
+## 🚀 Quick Start
 
-### Message Format Example
+### Prerequisites
+- Python **3.9+**
+
+### 1. Install
+
+```bash
+git clone https://github.com/rrahimi-uci/a2a-poc.git
+cd a2a-poc
+
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+pip install -r requirements.txt    # or: pip install -e ".[dev]"
+```
+
+### 2. Run the whole system with one command
+
+```bash
+python scripts/launch_system.py
+```
+
+This boots both agents, waits until they're healthy, then runs the
+orchestrator demo. That's the fastest way to see agents collaborating.
+
+### 3. …or run the pieces separately
+
+```bash
+# Terminal 1
+python scripts/start_math_agent.py        # → http://localhost:8001
+
+# Terminal 2
+python scripts/start_data_agent.py        # → http://localhost:8002
+
+# Terminal 3
+python scripts/run_demo.py                # orchestrator demo
+```
+
+---
+
+## 📋 Example problems
+
+The orchestrator can handle prompts like:
+
+```text
+"Calculate the mean and standard deviation of [12, 15, 18, 20, 22, 25, 28, 30] and create a histogram"
+"Find the correlation between [(1,5), (2,7), (3,6), (4,8), (5,10)] and visualize it"
+"Analyze the normal distribution with mean 100 and standard deviation 15"
+"Generate a summary report for the sales data: [450, 520, 380, 610, 720, 890]"
+```
+
+### Talk to an agent directly (raw JSON-RPC)
+
+```bash
+# Discover capabilities
+curl http://localhost:8001/
+
+# Send a message
+curl -X POST http://localhost:8001/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "1",
+    "jsonrpc": "2.0",
+    "method": "message/send",
+    "params": {
+      "message": { "role": "user", "parts": [{ "kind": "text", "text": "calculate mean of [1,2,3,4,5]" }] }
+    }
+  }'
+```
+
+---
+
+## 🔌 The A2A Protocol
+
+- **Transport:** HTTP · **Envelope:** [JSON-RPC 2.0](https://www.jsonrpc.org/specification)
+- **Methods:** `message/send`, `task/get`
+- **Discovery:** Agent Cards at `/` and `/.well-known/agent.json`
+- **Model:** task-based, async-friendly, with structured error codes
+
 ```json
 {
   "id": "unique-request-id",
-  "jsonrpc": "2.0", 
+  "jsonrpc": "2.0",
   "method": "message/send",
   "params": {
     "message": {
       "role": "user",
-      "parts": [{"kind": "text", "text": "Calculate mean of [1,2,3,4,5]"}]
+      "parts": [{ "kind": "text", "text": "Calculate mean of [1,2,3,4,5]" }]
     }
   }
 }
 ```
 
-## 📁 Project Structure
+---
+
+## 📁 Project structure
 
 ```
-A2Acommunication/
-├── agents/                    # Agent implementations
-│   ├── math_agent.py         # Mathematical computation agent
-│   └── data_analyst_agent.py # Data analysis & visualization agent
-├── common/                    # A2A protocol core
-│   ├── a2a_protocol.py       # Protocol definitions
-│   └── base_agent.py         # Base agent class
-├── config/                    # Configuration files
-│   ├── __init__.py           # Default configuration
-│   └── settings.ini          # System settings
-├── docs/                      # Documentation
-│   └── technical-architecture.html # Technical architecture docs
-├── examples/                  # Demo and examples
-│   └── orchestrator.py       # Multi-agent coordinator
-├── scripts/                   # Startup and management scripts
-│   ├── start_math_agent.py   # Math agent startup script
-│   ├── start_data_agent.py   # Data analyst startup script
-│   ├── launch_system.py      # Complete system launcher
-│   └── run_demo.py           # Demo runner
-├── tests/                     # Test files
-│   └── test_system.py        # System integration tests
-├── .vscode/                   # VS Code configuration
-│   └── tasks.json            # Development tasks
-├── requirements.txt           # Dependencies
-└── README.md                 # This file
+a2a-poc/
+├── common/                     # Core protocol + base agent
+│   ├── a2a_protocol.py         #   Pydantic models (Message, Task, AgentCard, …)
+│   └── base_agent.py           #   FastAPI BaseAgent + A2AClient
+├── agents/                     # Specialized agents
+│   ├── math_agent.py
+│   └── data_analyst_agent.py
+├── examples/                   # Orchestrator + AutoGen hybrid demos
+│   ├── orchestrator.py
+│   ├── simple_hybrid_demo.py
+│   └── hybrid_autogen_a2a.py
+├── scripts/                    # Runnable entry points
+│   ├── start_math_agent.py
+│   ├── start_data_agent.py
+│   ├── run_demo.py
+│   ├── launch_system.py
+│   └── smoke_test.py           # live-server HTTP smoke test
+├── tests/                      # Fast in-process pytest suite
+├── docs/                       # GitHub Pages site (landing + architecture)
+├── config/                     # Settings & defaults
+├── ARCHITECTURE.md
+├── pyproject.toml
+└── requirements.txt
 ```
-
-## 🛠️ Development
-
-### Adding New Agents
-
-1. **Inherit from BaseAgent:**
-```python
-from common.base_agent import BaseAgent
-
-class MyAgent(BaseAgent):
-    def __init__(self, port: int):
-        super().__init__(
-            agent_id="my-agent-001",
-            name="My Agent", 
-            description="My custom agent",
-            port=port,
-            capabilities=["my_capability"]
-        )
-```
-
-2. **Implement process_message:**
-```python
-async def process_message(self, params: MessageSendParams) -> Task:
-    # Process the incoming message
-    # Return a Task with results
-```
-
-### Testing Individual Agents
-
-You can test agents directly via HTTP:
-
-```bash
-# Get agent card
-curl http://localhost:8001/
-
-# Send a message
-curl -X POST http://localhost:8001/ \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "id": "test-1",
-    "jsonrpc": "2.0",
-    "method": "message/send", 
-    "params": {
-      "message": {
-        "role": "user",
-        "parts": [{"kind": "text", "text": "Calculate 2 + 2"}]
-      }
-    }
-  }'
-```
-
-## 🎯 Use Cases
-
-- **Educational:** Learn about multi-agent systems and A2A protocol
-- **Research:** Experiment with agent collaboration patterns
-- **Development:** Build more complex multi-agent applications
-- **Integration:** Connect with other A2A-compatible agents
-
-## � Testing
-
-**Run system tests:**
-```bash
-source venv/bin/activate
-python tests/test_system.py
-```
-
-**VS Code Integration:**
-- Press `Ctrl/Cmd + Shift + P`
-- Type "Tasks: Run Task"
-- Select from available tasks:
-  - Launch Math Agent
-  - Launch Data Analyst Agent
-  - Launch Complete System
-  - Run Demo
-  - Test System
-
-## �🔍 Troubleshooting
-
-**Agents not starting:**
-- Check if ports 8001/8002 are available
-- Ensure virtual environment is activated
-- Verify all dependencies are installed
-
-**Communication errors:**
-- Confirm both agents are running
-- Check firewall settings
-- Review agent logs for error details
-
-**Demo not working:**
-- Make sure agents start successfully first
-- Check terminal output for specific error messages
-- Verify network connectivity between agents
-
-## 📚 Learn More
-
-- [A2A Protocol Documentation](https://a2a-protocol.org/)
-- [A2A GitHub Repository](https://github.com/a2aproject/A2A)
-- [Agent Communication Patterns](https://en.wikipedia.org/wiki/Multi-agent_system)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable  
-5. Submit a pull request
-
-## 📄 License
-
-This project is for educational and demonstration purposes. Check the A2A protocol license for production use.
 
 ---
 
-**Happy Agent Building! 🤖✨**
+## 🧪 Testing
+
+The suite runs **fully in-process** (FastAPI `TestClient`) — no servers to
+launch, fast and deterministic:
+
+```bash
+pip install -e ".[dev]"   # or: pip install -r requirements-dev.txt
+pytest
+```
+
+Want a real over-the-wire check? Start the agents, then:
+
+```bash
+python scripts/smoke_test.py
+```
+
+---
+
+## 🛠️ Build your own agent
+
+```python
+from common.base_agent import BaseAgent
+from common.a2a_protocol import Task, TaskStatus, TaskState, Message, MessagePart, MessageRole, MessageSendParams
+
+class EchoAgent(BaseAgent):
+    def __init__(self, port: int = 8003):
+        super().__init__(
+            agent_id="echo-agent-001",
+            name="Echo Agent",
+            description="Repeats whatever it is told.",
+            port=port,
+            capabilities=["echo"],
+        )
+
+    async def process_message(self, params: MessageSendParams) -> Task:
+        text = " ".join(p.text for p in params.message.parts)
+        reply = Message(role=MessageRole.AGENT, parts=[MessagePart(text=f"You said: {text}")])
+        return Task(messages=[params.message, reply],
+                    status=TaskStatus(state=TaskState.COMPLETED, message=reply))
+
+if __name__ == "__main__":
+    EchoAgent().start_server()
+```
+
+See [ARCHITECTURE.md](ARCHITECTURE.md#extending-the-system) for the full guide.
+
+---
+
+## 🤝 Hybrid / cross-framework demo
+
+`examples/simple_hybrid_demo.py` runs without any extra setup and shows an A2A
+agent cooperating with a mock AutoGen code-generation agent. For the real,
+LLM-powered version:
+
+```bash
+pip install -e ".[autogen]"
+export OPENAI_API_KEY="sk-..."
+python examples/hybrid_autogen_a2a.py
+```
+
+---
+
+## 📚 Learn more
+
+- 🌐 **[Project site & docs](https://rrahimi-uci.github.io/a2a-poc/)**
+- 🏗️ **[Architecture deep-dive](ARCHITECTURE.md)**
+- 🔗 [A2A Protocol project](https://a2a-protocol.org/) · [JSON-RPC 2.0 spec](https://www.jsonrpc.org/specification)
+
+## 🤲 Contributing
+
+Issues and pull requests are welcome! Fork → branch → add tests → open a PR.
+
+## 📄 License
+
+Released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+
+**Built to make multi-agent collaboration easy to understand.** 🤖✨
+
+</div>

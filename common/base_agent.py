@@ -44,9 +44,19 @@ class BaseAgent(ABC):
         
         @self.app.get("/")
         async def get_agent_card():
-            """Return the agent card."""
-            return self.get_agent_card().dict()
-        
+            """Return the agent card (capability discovery endpoint)."""
+            return self.get_agent_card().model_dump(mode="json")
+
+        @self.app.get("/.well-known/agent.json")
+        async def get_well_known_agent_card():
+            """A2A-style well-known discovery path for the agent card."""
+            return self.get_agent_card().model_dump(mode="json")
+
+        @self.app.get("/health")
+        async def health():
+            """Lightweight liveness probe."""
+            return {"status": "ok", "agent": self.name, "agentId": self.agent_id}
+
         @self.app.post("/")
         async def handle_jsonrpc(request: JSONRPCRequest):
             """Handle JSON-RPC requests."""
@@ -60,14 +70,14 @@ class BaseAgent(ABC):
                         code=ErrorCodes.METHOD_NOT_FOUND,
                         message=f"Method not found: {request.method}"
                     )
-                    return JSONRPCResponse(id=request.id, error=error.dict())
+                    return JSONRPCResponse(id=request.id, error=error.model_dump())
             except Exception as e:
                 logger.error(f"Error handling request: {e}")
                 error = JSONRPCError(
                     code=ErrorCodes.INTERNAL_ERROR,
                     message=str(e)
                 )
-                return JSONRPCResponse(id=request.id, error=error.dict())
+                return JSONRPCResponse(id=request.id, error=error.model_dump())
     
     def get_agent_card(self) -> AgentCard:
         """Get the agent card for this agent."""
@@ -89,14 +99,14 @@ class BaseAgent(ABC):
         try:
             params = MessageSendParams(**request.params)
             task = await self.process_message(params)
-            return JSONRPCResponse(id=request.id, result=task.dict())
+            return JSONRPCResponse(id=request.id, result=task.model_dump(mode="json"))
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             error = JSONRPCError(
                 code=ErrorCodes.TASK_FAILED,
                 message=str(e)
             )
-            return JSONRPCResponse(id=request.id, error=error.dict())
+            return JSONRPCResponse(id=request.id, error=error.model_dump())
     
     async def _handle_task_get(self, request: JSONRPCRequest) -> JSONRPCResponse:
         """Handle task/get requests."""
@@ -106,10 +116,10 @@ class BaseAgent(ABC):
                 code=ErrorCodes.INVALID_PARAMS,
                 message="Task not found"
             )
-            return JSONRPCResponse(id=request.id, error=error.dict())
-        
+            return JSONRPCResponse(id=request.id, error=error.model_dump())
+
         task = self.tasks[task_id]
-        return JSONRPCResponse(id=request.id, result=task.dict())
+        return JSONRPCResponse(id=request.id, result=task.model_dump(mode="json"))
     
     @abstractmethod
     async def process_message(self, params: MessageSendParams) -> Task:
@@ -126,13 +136,13 @@ class BaseAgent(ABC):
             params=MessageSendParams(
                 message=message,
                 sessionId=session_id
-            ).dict()
+            ).model_dump(mode="json")
         )
-        
+
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 agent_url,
-                json=request.dict(),
+                json=request.model_dump(mode="json"),
                 headers={"Content-Type": "application/json"}
             ) as response:
                 if response.status != 200:
@@ -142,12 +152,14 @@ class BaseAgent(ABC):
                     )
                 
                 result = await response.json()
-                if "error" in result:
+                # A JSON-RPC response always carries an "error" key; it is only
+                # an actual error when its value is non-null.
+                if result.get("error") is not None:
                     raise HTTPException(
                         status_code=500,
                         detail=f"Agent returned error: {result['error']}"
                     )
-                
+
                 return Task(**result["result"])
     
     async def get_agent_card_from_url(self, agent_url: str) -> AgentCard:
@@ -180,22 +192,24 @@ class A2AClient:
             params=MessageSendParams(
                 message=message,
                 sessionId=session_id
-            ).dict()
+            ).model_dump(mode="json")
         )
-        
+
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 agent_url,
-                json=request.dict(),
+                json=request.model_dump(mode="json"),
                 headers={"Content-Type": "application/json"}
             ) as response:
                 if response.status != 200:
                     raise Exception(f"Agent communication failed: {await response.text()}")
                 
                 result = await response.json()
-                if "error" in result:
+                # A JSON-RPC response always carries an "error" key; it is only
+                # an actual error when its value is non-null.
+                if result.get("error") is not None:
                     raise Exception(f"Agent returned error: {result['error']}")
-                
+
                 return Task(**result["result"])
     
     async def get_agent_card(self, agent_url: str) -> AgentCard:
