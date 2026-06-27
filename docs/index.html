@@ -9,7 +9,8 @@
   <meta name="description" content="A clean, open-source reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents that discover each other and collaborate over JSON-RPC 2.0 using Python and FastAPI." />
   <meta name="keywords" content="A2A protocol, agent-to-agent, multi-agent system, AI agents, agent communication, JSON-RPC 2.0, agent interoperability, FastAPI agents, Python AI agents, LLM agents, agent orchestration, AutoGen" />
   <meta name="author" content="Reza Rahimi" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://rrahimi-uci.github.io/a2a-poc/" />
   <meta name="theme-color" content="#0d1b2a" />
 
@@ -22,6 +23,8 @@
   <meta property="og:image" content="https://rrahimi-uci.github.io/a2a-poc/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A2A Protocol — Math Agent, Data Analyst Agent and Orchestrator collaborating over JSON-RPC 2.0" />
+  <meta property="og:locale" content="en_US" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -35,15 +38,38 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareSourceCode",
-    "name": "A2A Protocol — Multi-Agent Communication",
-    "description": "A clean reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents that collaborate over JSON-RPC 2.0.",
-    "codeRepository": "https://github.com/rrahimi-uci/a2a-poc",
-    "programmingLanguage": "Python",
-    "license": "https://opensource.org/licenses/MIT",
-    "author": { "@type": "Person", "name": "Reza Rahimi" },
-    "keywords": "A2A protocol, multi-agent, AI agents, JSON-RPC 2.0, agent communication, FastAPI",
-    "url": "https://rrahimi-uci.github.io/a2a-poc/"
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://rrahimi-uci.github.io/a2a-poc/#website",
+        "name": "A2A Protocol — Multi-Agent Communication",
+        "url": "https://rrahimi-uci.github.io/a2a-poc/",
+        "description": "Reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents collaborating over JSON-RPC 2.0.",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://github.com/rrahimi-uci/a2a-poc#software",
+        "name": "A2A Protocol — Multi-Agent Communication",
+        "description": "A clean reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents that discover each other and collaborate over JSON-RPC 2.0 using Python and FastAPI.",
+        "codeRepository": "https://github.com/rrahimi-uci/a2a-poc",
+        "programmingLanguage": "Python",
+        "runtimePlatform": "Python 3.9+",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": { "@type": "Person", "name": "Reza Rahimi" },
+        "keywords": "A2A protocol, agent-to-agent, multi-agent system, AI agents, agent communication, JSON-RPC 2.0, agent interoperability, FastAPI, Python, LLM agents, AutoGen",
+        "url": "https://rrahimi-uci.github.io/a2a-poc/",
+        "isPartOf": { "@id": "https://rrahimi-uci.github.io/a2a-poc/#website" }
+      },
+      {
+        "@type": "TechArticle",
+        "name": "A2A Protocol — Technical Architecture",
+        "url": "https://rrahimi-uci.github.io/a2a-poc/technical-architecture.html",
+        "headline": "Technical architecture and design of the A2A multi-agent protocol",
+        "inLanguage": "en",
+        "isPartOf": { "@id": "https://rrahimi-uci.github.io/a2a-poc/#website" }
+      }
+    ]
   }
   </script>
 
