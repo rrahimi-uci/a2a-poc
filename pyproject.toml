@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "a2a-protocol-demo"
+version = "1.1.0"
+description = "A clean, educational implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents collaborating over JSON-RPC 2.0."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Reza Rahimi" }]
+keywords = [
+    "a2a",
+    "agent-to-agent",
+    "multi-agent",
+    "ai-agents",
+    "json-rpc",
+    "agent-protocol",
+    "agent-communication",
+    "llm",
+    "fastapi",
+    "interoperability",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "fastapi>=0.115.2",
+    "uvicorn>=0.32.0",
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "scipy>=1.11",
+    "aiohttp>=3.10",
+    "pydantic>=2.9",
+    "python-multipart>=0.0.18",
+    "jinja2>=3.1",
+    "requests>=2.32",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+]
+autogen = [
+    "pyautogen>=0.2.35",
+    "openai>=1.51.2",
+]
+
+[project.urls]
+Homepage = "https://rrahimi-uci.github.io/a2a-poc/"
+Repository = "https://github.com/rrahimi-uci/a2a-poc"
+Documentation = "https://rrahimi-uci.github.io/a2a-poc/"
+"Architecture" = "https://github.com/rrahimi-uci/a2a-poc/blob/main/ARCHITECTURE.md"
+
+[tool.setuptools]
+packages = ["common", "agents", "config"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --import-mode=importlib"
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]

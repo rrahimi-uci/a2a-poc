@@ -44,8 +44,10 @@ class SimpleA2AClient:
                         return f"Error: HTTP {response.status} - {await response.text()}"
                     
                     result = await response.json()
-                    
-                    if "error" in result:
+
+                    # The "error" key is always present in a JSON-RPC response;
+                    # only treat it as an error when the value is non-null.
+                    if result.get("error") is not None:
                         return f"Agent error: {result['error']}"
                     
                     # Extract the response text

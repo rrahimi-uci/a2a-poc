@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO -->
+  <title>A2A Protocol — Multi-Agent Communication for AI Agents (JSON-RPC 2.0)</title>
+  <meta name="description" content="A clean, open-source reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents that discover each other and collaborate over JSON-RPC 2.0 using Python and FastAPI." />
+  <meta name="keywords" content="A2A protocol, agent-to-agent, multi-agent system, AI agents, agent communication, JSON-RPC 2.0, agent interoperability, FastAPI agents, Python AI agents, LLM agents, agent orchestration, AutoGen" />
+  <meta name="author" content="Reza Rahimi" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://rrahimi-uci.github.io/a2a-poc/" />
+  <meta name="theme-color" content="#0d1b2a" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="A2A Protocol — Multi-Agent Communication" />
+  <meta property="og:title" content="A2A Protocol — Multi-Agent Communication for AI Agents" />
+  <meta property="og:description" content="Specialized AI agents that discover each other and collaborate over a clean JSON-RPC 2.0 protocol. Python · FastAPI · Pydantic." />
+  <meta property="og:url" content="https://rrahimi-uci.github.io/a2a-poc/" />
+  <meta property="og:image" content="https://rrahimi-uci.github.io/a2a-poc/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="A2A Protocol — Multi-Agent Communication for AI Agents" />
+  <meta name="twitter:description" content="Specialized AI agents that collaborate over a clean JSON-RPC 2.0 protocol. Python · FastAPI · Pydantic." />
+  <meta name="twitter:image" content="https://rrahimi-uci.github.io/a2a-poc/og-image.png" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d1b2a'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%2348cae4' font-family='Arial' font-weight='bold'%3EA2%3C/text%3E%3C/svg%3E" />
+
+  <!-- Structured data: helps search engines understand the project -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "A2A Protocol — Multi-Agent Communication",
+    "description": "A clean reference implementation of the Agent-to-Agent (A2A) protocol: specialized AI agents that collaborate over JSON-RPC 2.0.",
+    "codeRepository": "https://github.com/rrahimi-uci/a2a-poc",
+    "programmingLanguage": "Python",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": { "@type": "Person", "name": "Reza Rahimi" },
+    "keywords": "A2A protocol, multi-agent, AI agents, JSON-RPC 2.0, agent communication, FastAPI",
+    "url": "https://rrahimi-uci.github.io/a2a-poc/"
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0d1b2a; --bg2: #11263c; --card: #14304a; --line: #1f4060;
+      --text: #e6edf3; --muted: #9fb3c8; --accent: #48cae4; --accent2: #90e0ef;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+    header.hero {
+      background: radial-gradient(1200px 500px at 70% -10%, #1b4965 0%, var(--bg) 60%);
+      border-bottom: 1px solid var(--line); padding: 84px 0 64px;
+    }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .badge-row img { height: 22px; }
+    h1 { font-size: clamp(2.4rem, 6vw, 4rem); margin: 0 0 10px; letter-spacing: -1px; }
+    .tagline { font-size: clamp(1.1rem, 2.6vw, 1.5rem); color: var(--accent); margin: 0 0 18px; }
+    .lede { font-size: 1.15rem; color: var(--muted); max-width: 680px; }
+    .cta { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; }
+    .btn {
+      display: inline-block; padding: 12px 22px; border-radius: 10px; font-weight: 600;
+      border: 1px solid var(--line); transition: transform .12s ease, background .12s ease;
+    }
+    .btn:hover { transform: translateY(-2px); text-decoration: none; }
+    .btn.primary { background: var(--accent); color: #042027; border-color: var(--accent); }
+    .btn.ghost { background: transparent; color: var(--text); }
+
+    section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+    h2 { font-size: 1.7rem; margin: 0 0 22px; }
+    h2 .em { color: var(--accent); }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 1.2rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .98rem; }
+    .pill { display: inline-block; font-size: .78rem; color: var(--accent2); background: #0c2236;
+            border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; margin-top: 12px; }
+
+    pre {
+      background: #0a1622; border: 1px solid var(--line); border-radius: 12px; padding: 18px;
+      overflow-x: auto; font-size: .9rem;
+    }
+    code { font-family: "SF Mono", Menlo, Consolas, monospace; color: #c7e7f5; }
+    .diagram { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+    .mermaid { text-align: center; }
+
+    ul.clean { list-style: none; padding: 0; }
+    ul.clean li { padding: 8px 0 8px 28px; position: relative; color: var(--muted); }
+    ul.clean li::before { content: "▹"; position: absolute; left: 6px; color: var(--accent); }
+
+    footer { padding: 40px 0 64px; color: var(--muted); font-size: .92rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="badge-row">
+        <a href="https://github.com/rrahimi-uci/a2a-poc/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/rrahimi-uci/a2a-poc/actions/workflows/ci.yml/badge.svg" /></a>
+        <img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-blue.svg" />
+        <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-green.svg" />
+        <img alt="JSON-RPC 2.0" src="https://img.shields.io/badge/protocol-JSON--RPC%202.0-orange.svg" />
+      </div>
+      <h1>🤖 A2A Protocol</h1>
+      <p class="tagline">Multi-Agent Communication for AI Agents</p>
+      <p class="lede">
+        A clean, open-source reference implementation of the <strong>Agent-to-Agent (A2A)
+        protocol</strong> — specialized AI agents that <strong>discover each other</strong> and
+        <strong>collaborate over JSON-RPC 2.0</strong>. Built with Python, FastAPI and Pydantic.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/rrahimi-uci/a2a-poc">⭐ View on GitHub</a>
+        <a class="btn ghost" href="technical-architecture.html">🏗️ Technical Architecture</a>
+        <a class="btn ghost" href="https://github.com/rrahimi-uci/a2a-poc#-quick-start">🚀 Quick Start</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="what">
+      <h2>What is <span class="em">A2A</span>?</h2>
+      <p class="lede" style="max-width:760px">
+        Instead of one monolithic model doing everything, the A2A pattern splits work across
+        focused agents that expose their capabilities and talk to each other over plain HTTP.
+        A coordinator analyzes each problem, routes it to the right specialist agent(s), and
+        merges the results — and because the transport is just JSON-RPC, agents built on
+        <em>different frameworks</em> can interoperate.
+      </p>
+      <div class="grid" style="margin-top:28px">
+        <div class="card">
+          <h3>🧮 Math Agent</h3>
+          <p>Arithmetic, statistics, linear algebra and probability distributions — with safe, AST-based expression evaluation.</p>
+          <span class="pill">port 8001</span>
+        </div>
+        <div class="card">
+          <h3>📊 Data Analyst Agent</h3>
+          <p>Correlation analysis, distribution summaries, reports and visualizations powered by pandas &amp; matplotlib.</p>
+          <span class="pill">port 8002</span>
+        </div>
+        <div class="card">
+          <h3>🧭 Orchestrator</h3>
+          <p>Analyzes a problem, decides which agents are needed, routes the work and combines answers into one solution.</p>
+          <span class="pill">coordinator</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="em">Architecture</span> at a glance</h2>
+      <div class="diagram">
+        <pre class="mermaid">
+graph TD
+    U["👤 User / Caller"] --> O["🧭 Multi-Agent Orchestrator<br/>analyze · route · combine"]
+    O -->|JSON-RPC 2.0| MA["🧮 Math Agent<br/>:8001"]
+    O -->|JSON-RPC 2.0| DA["📊 Data Analyst Agent<br/>:8002"]
+    MA <-->|A2A Protocol over HTTP| DA
+        </pre>
+      </div>
+      <p style="margin-top:18px">
+        Every agent publishes an <strong>Agent Card</strong> at <code>/</code> and
+        <code>/.well-known/agent.json</code> for runtime capability discovery. Read the full
+        design — sequence diagrams, data model and extension guide — in the
+        <a href="technical-architecture.html">Technical Architecture</a>.
+      </p>
+    </section>
+
+    <section id="quickstart">
+      <h2><span class="em">Quick</span> start</h2>
+      <pre><code># 1. Clone &amp; install
+git clone https://github.com/rrahimi-uci/a2a-poc.git
+cd a2a-poc
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2. Launch the whole system (both agents + demo)
+python scripts/launch_system.py</code></pre>
+      <p>Or talk to an agent directly with one <code>curl</code>:</p>
+      <pre><code>curl -X POST http://localhost:8001/ \
+  -H "Content-Type: application/json" \
+  -d '{"id":"1","jsonrpc":"2.0","method":"message/send",
+       "params":{"message":{"role":"user",
+       "parts":[{"kind":"text","text":"calculate mean of [1,2,3,4,5]"}]}}}'</code></pre>
+    </section>
+
+    <section id="features">
+      <h2>Why it's <span class="em">useful</span></h2>
+      <ul class="clean">
+        <li><strong>Interoperable</strong> — plain HTTP + JSON-RPC 2.0; any language or framework can join.</li>
+        <li><strong>Discoverable</strong> — Agent Cards let agents learn each other's capabilities at runtime.</li>
+        <li><strong>Composable</strong> — an orchestrator combines specialists into richer solutions.</li>
+        <li><strong>Cross-framework</strong> — includes a hybrid demo with a Microsoft AutoGen-style agent.</li>
+        <li><strong>Tested</strong> — a fast, fully in-process pytest suite (31 tests) keeps it honest.</li>
+      </ul>
+    </section>
+
+    <section id="learn" style="border-bottom:none">
+      <h2>Learn <span class="em">more</span></h2>
+      <div class="grid">
+        <a class="card" href="https://github.com/rrahimi-uci/a2a-poc"><h3>📦 Source code</h3><p>Browse the full project on GitHub.</p></a>
+        <a class="card" href="technical-architecture.html"><h3>🏗️ Architecture</h3><p>Diagrams, data model &amp; protocol details.</p></a>
+        <a class="card" href="https://www.jsonrpc.org/specification"><h3>🔗 JSON-RPC 2.0</h3><p>The messaging spec A2A builds on.</p></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Released under the MIT License · Built to make multi-agent collaboration easy to understand 🤖✨</p>
+      <p><a href="https://github.com/rrahimi-uci/a2a-poc">github.com/rrahimi-uci/a2a-poc</a></p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "dark",
+      themeVariables: { primaryColor: "#14304a", lineColor: "#48cae4", primaryTextColor: "#e6edf3" } });
+  </script>
+</body>
+</html>

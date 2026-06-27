@@ -179,7 +179,7 @@ class MathAgent(BaseAgent):
             except Exception as e:
                 results.append(f"{expr} = Error: {str(e)}")
         
-        return "Calculation Results:\\n" + "\\n".join(results)
+        return "Calculation Results:\n" + "\n".join(results)
     
     async def _handle_linear_algebra(self, text: str) -> str:
         """Handle linear algebra operations."""
@@ -196,7 +196,7 @@ class MathAgent(BaseAgent):
                     # Perform matrix multiplication if dimensions allow
                     if A.shape[1] == B.shape[0]:
                         result = np.dot(A, B)
-                        return f"Matrix multiplication result:\\n{result.tolist()}"
+                        return f"Matrix multiplication result:\n{result.tolist()}"
                     else:
                         return f"Matrix dimensions incompatible for multiplication: {A.shape} and {B.shape}"
                         
@@ -254,7 +254,7 @@ class MathAgent(BaseAgent):
                 except Exception as e:
                     results.append(f"{expr} = Error: {str(e)}")
             
-            return "Results:\\n" + "\\n".join(results)
+            return "Results:\n" + "\n".join(results)
         
         return """I can help with various mathematical operations:
 - Basic arithmetic: '2 + 3 * 4', 'sqrt(16)', 'sin(pi/2)'
@@ -267,7 +267,7 @@ What calculation would you like me to perform?"""
     def _extract_numbers(self, text: str) -> List[float]:
         """Extract numbers from text."""
         # Look for arrays/lists first
-        array_pattern = r'\\[([\\d.,\\s]+)\\]'
+        array_pattern = r'\[([\d.,\s]+)\]'
         array_match = re.search(array_pattern, text)
         
         if array_match:
@@ -276,7 +276,7 @@ What calculation would you like me to perform?"""
             return numbers
         
         # Look for individual numbers
-        number_pattern = r'-?\\d+\\.?\\d*'
+        number_pattern = r'-?\d+\.?\d*'
         matches = re.findall(number_pattern, text)
         return [float(match) for match in matches]
     
@@ -284,13 +284,13 @@ What calculation would you like me to perform?"""
         """Extract mathematical expressions from text."""
         # Simple patterns for mathematical expressions
         patterns = [
-            r'[\\d+\\-*/^()\\s.]+[=]?[\\d+\\-*/^()\\s.]*',
-            r'sqrt\\([\\d+\\-*/^()\\s.]+\\)',
-            r'sin\\([\\d+\\-*/^()\\s.]+\\)',
-            r'cos\\([\\d+\\-*/^()\\s.]+\\)',
-            r'tan\\([\\d+\\-*/^()\\s.]+\\)',
-            r'log\\([\\d+\\-*/^()\\s.]+\\)',
-            r'exp\\([\\d+\\-*/^()\\s.]+\\)'
+            r'[\d+\-*/^()\s.]+[=]?[\d+\-*/^()\s.]*',
+            r'sqrt\([\d+\-*/^()\s.]+\)',
+            r'sin\([\d+\-*/^()\s.]+\)',
+            r'cos\([\d+\-*/^()\s.]+\)',
+            r'tan\([\d+\-*/^()\s.]+\)',
+            r'log\([\d+\-*/^()\s.]+\)',
+            r'exp\([\d+\-*/^()\s.]+\)'
         ]
         
         expressions = []
@@ -310,10 +310,10 @@ What calculation would you like me to perform?"""
     def _extract_matrices(self, text: str) -> List[List[List[float]]]:
         """Extract matrices from text."""
         # Look for matrix patterns like [[1,2],[3,4]]
-        matrix_pattern = r'\\[\\[([\\d.,\\s]+)\\](?:,\\s*\\[([\\d.,\\s]+)\\])*\\]'
+        matrix_pattern = r'\[\[([\d.,\s]+)\](?:,\s*\[([\d.,\s]+)\])*\]'
         
         # Simplified: look for any array-like structures
-        arrays = re.findall(r'\\[([\\d.,\\s]+)\\]', text)
+        arrays = re.findall(r'\[([\d.,\s]+)\]', text)
         
         matrices = []
         for array in arrays:

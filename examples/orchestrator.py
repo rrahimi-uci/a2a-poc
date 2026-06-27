@@ -209,7 +209,7 @@ async def main():
     print("=" * 50)
     
     for i, problem in enumerate(problems, 1):
-        print(f"\\n{i}. Problem: {problem}")
+        print(f"\n{i}. Problem: {problem}")
         print("-" * 40)
         
         try:
@@ -217,7 +217,7 @@ async def main():
             
             print(f"Agents Used: {', '.join(result['agents_used'])}")
             print(f"Steps Completed: {len(result['steps'])}")
-            print("\\nFinal Result:")
+            print("\nFinal Result:")
             print(result['final_result'])
             
         except Exception as e:
