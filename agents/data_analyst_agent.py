@@ -2,18 +2,13 @@
 Data Analyst Agent - Specialized agent for data analysis and visualization.
 """
 
+import json
 import logging
+import re
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-import io
-import base64
-from typing import Dict, List, Any, Optional
-import json
-import re
-import tempfile
-import os
+from typing import Any, List
 
 import sys
 import os
@@ -191,10 +186,10 @@ Y variable statistics:
             else:
                 # Single variable data
                 df = pd.DataFrame({'values': data})
-                
+
                 skewness_val = df['values'].skew()
                 kurtosis_val = df['values'].kurtosis()
-                
+
                 analysis = f"""Data Analysis Summary:
 - Count: {len(df)}
 - Mean: {df['values'].mean():.4f}
@@ -203,8 +198,8 @@ Y variable statistics:
 - Variance: {df['values'].var():.4f}
 - Min: {df['values'].min():.4f}
 - Max: {df['values'].max():.4f}
-- Skewness: {skewness_val:.4f}
-- Kurtosis: {kurtosis_val:.4f}
+- Skewness: {self._fmt_stat(skewness_val)} — {self._interpret_skewness(skewness_val)}
+- Kurtosis: {self._fmt_stat(kurtosis_val)}
 
 Quartiles:
 - Q1 (25%): {df['values'].quantile(0.25):.4f}
@@ -282,8 +277,8 @@ Descriptive Statistics:
 - Range: {df['values'].min():.2f} - {df['values'].max():.2f}
 
 Distribution Analysis:
-- Skewness: {skewness_val:.4f}
-- Kurtosis: {kurtosis_val:.4f}
+- Skewness: {self._fmt_stat(skewness_val)} — {self._interpret_skewness(skewness_val)}
+- Kurtosis: {self._fmt_stat(kurtosis_val)}
 
 Quartile Analysis:
 - Q1 (25th percentile): {df['values'].quantile(0.25):.4f}
@@ -368,16 +363,16 @@ What would you like me to analyze?"""
             except:
                 pass
         
-        # Look for array/list patterns
-        array_pattern = r'\[([\d.,\s()]+)\]'
+        # Look for array/list patterns (allow negative numbers)
+        array_pattern = r'\[([-\d.,\s()]+)\]'
         array_matches = re.findall(array_pattern, text)
-        
+
         for match in array_matches:
             try:
                 # Check for tuples (paired data)
                 if '(' in match:
                     # Extract tuples like (1,2), (3,4)
-                    tuple_pattern = r'\(([\d.,\s]+)\)'
+                    tuple_pattern = r'\(([-\d.,\s]+)\)'
                     tuple_matches = re.findall(tuple_pattern, match)
                     
                     pairs = []
@@ -543,8 +538,17 @@ Note: In a full implementation, the actual chart image would be generated and sa
         
         return f"{strength} {direction} correlation"
     
+    @staticmethod
+    def _fmt_stat(value: float) -> str:
+        """Format a statistic, showing 'N/A' when undefined (e.g. too few points)."""
+        if value is None or pd.isna(value):
+            return "N/A"
+        return f"{value:.4f}"
+
     def _interpret_skewness(self, skew: float) -> str:
         """Interpret skewness value."""
+        if skew is None or pd.isna(skew):
+            return "undefined (need at least 3 data points)"
         if abs(skew) < 0.5:
             return "approximately symmetric"
         elif skew > 0.5:

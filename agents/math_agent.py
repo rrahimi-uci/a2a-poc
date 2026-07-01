@@ -4,14 +4,10 @@ Math Agent - Specialized agent for mathematical computations and statistical ana
 
 import ast
 import logging
-import math
 import operator
-import numpy as np
-import pandas as pd
-from scipy import stats
-from typing import Dict, List, Any, Optional
-import json
 import re
+import numpy as np
+from typing import Dict, List, Any
 
 import sys
 import os
@@ -183,28 +179,33 @@ class MathAgent(BaseAgent):
     
     async def _handle_linear_algebra(self, text: str) -> str:
         """Handle linear algebra operations."""
-        # For this example, we'll do a simple matrix operation
-        if "matrix" in text:
-            # Extract matrices from text (simplified example)
-            matrices = self._extract_matrices(text)
-            
+        matrices = self._extract_matrices(text)
+
+        # Determinant of a single square matrix.
+        if "determinant" in text:
+            if not matrices:
+                return "Please provide a square matrix, e.g. 'determinant of [[1,2],[3,4]]'."
+            A = np.array(matrices[0], dtype=float)
+            if A.ndim != 2 or A.shape[0] != A.shape[1]:
+                return f"Determinant requires a square matrix, got shape {A.shape}."
+            return f"Determinant of {A.tolist()} = {float(np.linalg.det(A)):.4f}"
+
+        # Dot product of two vectors / matrix multiplication of two matrices.
+        if "matrix" in text or "dot product" in text:
             if len(matrices) >= 2:
                 try:
-                    A = np.array(matrices[0])
-                    B = np.array(matrices[1])
-                    
-                    # Perform matrix multiplication if dimensions allow
+                    A = np.array(matrices[0], dtype=float)
+                    B = np.array(matrices[1], dtype=float)
+
                     if A.shape[1] == B.shape[0]:
                         result = np.dot(A, B)
                         return f"Matrix multiplication result:\n{result.tolist()}"
-                    else:
-                        return f"Matrix dimensions incompatible for multiplication: {A.shape} and {B.shape}"
-                        
+                    return f"Matrix dimensions incompatible for multiplication: {A.shape} and {B.shape}"
                 except Exception as e:
                     return f"Error in matrix operation: {str(e)}"
-            
-            return "Please provide two matrices for linear algebra operations."
-        
+
+            return "Please provide two matrices, e.g. 'multiply matrix [[1,2],[3,4]] and [[5,6],[7,8]]'."
+
         return "Linear algebra operation not recognized. Try 'multiply matrix [[1,2],[3,4]] and [[5,6],[7,8]]'."
     
     async def _handle_probability(self, text: str) -> str:
@@ -266,8 +267,8 @@ What calculation would you like me to perform?"""
     
     def _extract_numbers(self, text: str) -> List[float]:
         """Extract numbers from text."""
-        # Look for arrays/lists first
-        array_pattern = r'\[([\d.,\s]+)\]'
+        # Look for arrays/lists first (allow negative numbers)
+        array_pattern = r'\[([-\d.,\s]+)\]'
         array_match = re.search(array_pattern, text)
         
         if array_match:
@@ -308,18 +309,25 @@ What calculation would you like me to perform?"""
         return cleaned
     
     def _extract_matrices(self, text: str) -> List[List[List[float]]]:
-        """Extract matrices from text."""
-        # Look for matrix patterns like [[1,2],[3,4]]
-        matrix_pattern = r'\[\[([\d.,\s]+)\](?:,\s*\[([\d.,\s]+)\])*\]'
-        
-        # Simplified: look for any array-like structures
-        arrays = re.findall(r'\[([\d.,\s]+)\]', text)
-        
-        matrices = []
-        for array in arrays:
-            row = [float(x.strip()) for x in array.split(',') if x.strip()]
-            matrices.append([row])  # Single row matrix
-        
+        """Extract 2D matrices like ``[[1,2],[3,4]]`` from text.
+
+        Each matched ``[[...],[...]]`` block becomes one matrix (a list of
+        rows). This correctly groups rows belonging to the same matrix instead
+        of treating every ``[...]`` as a separate single-row matrix.
+        """
+        # A matrix is an outer bracket wrapping one or more bracketed rows.
+        matrix_pattern = r'\[\s*(?:\[[-\d.,\s]*\]\s*,?\s*)+\]'
+        matrices: List[List[List[float]]] = []
+
+        for block in re.findall(matrix_pattern, text):
+            rows: List[List[float]] = []
+            for row in re.findall(r'\[([-\d.,\s]*)\]', block):
+                values = [float(x.strip()) for x in row.split(',') if x.strip()]
+                if values:
+                    rows.append(values)
+            if rows:
+                matrices.append(rows)
+
         return matrices
     
     # Operators allowed in AST-based math evaluation
