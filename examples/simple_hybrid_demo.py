@@ -13,8 +13,14 @@ import requests
 import sys
 import os
 
-# Local simplified client for demo
-from simple_a2a_client import SimpleA2AClient
+# Local simplified client for demo. Support both running this file as a script
+# (``python examples/simple_hybrid_demo.py``) and importing it as a package
+# module (``from examples.simple_hybrid_demo import ...``).
+try:
+    from examples.simple_a2a_client import SimpleA2AClient
+except ImportError:  # pragma: no cover - script-relative fallback
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    from simple_a2a_client import SimpleA2AClient
 
 logger = logging.getLogger(__name__)
 

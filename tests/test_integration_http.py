@@ -10,6 +10,7 @@ import socket
 import threading
 import time
 
+import allure
 import pytest
 import requests
 import uvicorn
@@ -74,3 +75,54 @@ def test_a2a_client_round_trip(live_math_url):
     task = asyncio.run(client.send_message(live_math_url, msg))
     assert task.status.state.value == "completed"
     assert "Mean: 20.0000" in task.status.message.parts[0].text
+
+
+@allure.feature("A2AClient")
+@allure.story("Discovery")
+def test_a2a_client_get_agent_card(live_math_url):
+    card = asyncio.run(A2AClient().get_agent_card(live_math_url))
+    assert card.id == "math-agent-001"
+
+
+@allure.feature("A2AClient")
+@allure.story("Error handling")
+def test_a2a_client_get_agent_card_http_error(live_math_url):
+    with pytest.raises(Exception):
+        asyncio.run(A2AClient().get_agent_card(f"{live_math_url}/.well-known/missing.json"))
+
+
+@allure.feature("A2AClient")
+@allure.story("Error handling")
+def test_a2a_client_send_message_http_error(live_math_url):
+    msg = Message(role=MessageRole.USER, parts=[MessagePart(text="hi")])
+    with pytest.raises(Exception):
+        # POST to a path that isn't the JSON-RPC endpoint -> non-200.
+        asyncio.run(A2AClient().send_message(f"{live_math_url}/health", msg))
+
+
+@allure.feature("BaseAgent")
+@allure.story("Agent-to-agent client")
+def test_base_agent_send_message_to_agent(live_math_url):
+    """BaseAgent's own outbound client methods round-trip against a live peer."""
+    caller = MathAgent(port=9999)
+    msg = Message(role=MessageRole.USER, parts=[MessagePart(text="calculate mean of [4, 8]")])
+    task = asyncio.run(caller.send_message_to_agent(live_math_url, msg))
+    assert task.status.state.value == "completed"
+    assert "Mean: 6.0000" in task.status.message.parts[0].text
+
+
+@allure.feature("BaseAgent")
+@allure.story("Agent-to-agent client")
+def test_base_agent_get_agent_card_from_url(live_math_url):
+    caller = MathAgent(port=9999)
+    card = asyncio.run(caller.get_agent_card_from_url(live_math_url))
+    assert card.id == "math-agent-001"
+
+
+@allure.feature("BaseAgent")
+@allure.story("Agent-to-agent client")
+def test_base_agent_send_message_to_agent_http_error(live_math_url):
+    caller = MathAgent(port=9999)
+    msg = Message(role=MessageRole.USER, parts=[MessagePart(text="hi")])
+    with pytest.raises(Exception):
+        asyncio.run(caller.send_message_to_agent(f"{live_math_url}/health", msg))

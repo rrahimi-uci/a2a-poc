@@ -8,7 +8,8 @@
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://rrahimi-uci.github.io/a2a-poc/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-31%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-147%20passing-brightgreen.svg)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen.svg)](tests/)
 [![Code style](https://img.shields.io/badge/protocol-JSON--RPC%202.0-orange.svg)](https://www.jsonrpc.org/specification)
 
 **[📖 Documentation & Live Site](https://rrahimi-uci.github.io/a2a-poc/)** ·
@@ -202,11 +203,20 @@ a2a-poc/
 ## 🧪 Testing
 
 The suite runs **fully in-process** (FastAPI `TestClient`) — no servers to
-launch, fast and deterministic:
+launch, fast and deterministic. **147 tests, ~93% coverage:**
 
 ```bash
 pip install -e ".[dev]"   # or: pip install -r requirements-dev.txt
-pytest
+pytest                                   # run everything (~0.6s)
+pytest --cov --cov-report=term-missing   # coverage report (gate: 90%)
+```
+
+Generate an [Allure](https://allurereport.org/) report (tests are grouped by
+feature/story/title):
+
+```bash
+pytest --alluredir=allure-results
+allure serve allure-results              # requires the Allure CLI
 ```
 
 Want a real over-the-wire check? Start the agents, then:
@@ -264,6 +274,7 @@ python examples/hybrid_autogen_a2a.py
 ## 📚 Learn more
 
 - 🌐 **[Project site & docs](https://rrahimi-uci.github.io/a2a-poc/)**
+- 🍳 **[Cookbook — recipes for using it as a library](COOKBOOK.md)**
 - 🏗️ **[Architecture deep-dive](ARCHITECTURE.md)**
 - 🔗 [A2A Protocol project](https://a2a-protocol.org/) · [JSON-RPC 2.0 spec](https://www.jsonrpc.org/specification)
 
