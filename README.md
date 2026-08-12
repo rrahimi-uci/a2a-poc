@@ -17,6 +17,9 @@
 **[🚀 Quick Start](#-quick-start)** ·
 **[🧪 Tests](#-testing)**
 
+**Release:** `a2a-v0.0.1` — a stable reference snapshot with the complete two-agent
+demo, orchestrator, hybrid example, Agent Card discovery, and 147-test / 93%-coverage suite.
+
 </div>
 
 ---
